@@ -59,21 +59,21 @@ while videoCap.isOpened() :
 	# 動作モードの選択 ------------------------------------------- 
 	if sMode == 1:
 		imDisplay = imResize
-		if sKey == ord('u'):
+		if sKey == ord('w'):
 			ClsDmc.stop()
 			ClsDmc.driveMotor(0, 0, 80)
 			ClsDmc.driveMotor(1, 0, 80)
-		elif sKey == ord('m'):
+		elif sKey == ord('x'):
 			ClsDmc.stop()
-		elif sKey == ord('h'):
+		elif sKey == ord('a'):
 			ClsDmc.stop()
 			ClsDmc.driveMotor(0, 0, 80)
 			ClsDmc.driveMotor(1, 1, 80)
-		elif sKey == ord('k'):
+		elif sKey == ord('d'):
 			ClsDmc.stop()
 			ClsDmc.driveMotor(0, 1, 80)
 			ClsDmc.driveMotor(1, 0, 80)
-		elif sKey == ord('j'):
+		elif sKey == ord('s'):
 			ClsDmc.stop()
 			ClsDmc.driveMotor(0, 1, 80)
 			ClsDmc.driveMotor(1, 1, 80)
