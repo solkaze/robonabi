@@ -83,8 +83,6 @@ def locateTower(imInputHSV):
 
     return (sHorizontal, sVertical, sSize), vSumBlueVertical
 
-    return flag
-
 def locateGoal(imInputHSV):
     # 対象物(黄色)
     vMinHSV = np.array([20,180,0])
