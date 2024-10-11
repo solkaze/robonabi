@@ -27,18 +27,24 @@ def locateFlag(imInputHSV):
     vSumRedVertical = np.sum(imRedBinary, axis=0)
     sMaxIndex = vSumRedVertical.argmax()
 
-    flag = False
+    Rsize = vSumRedVertical[sMaxIndex]
 
-    # 対象色エリアの縦の長さが5画素よりも大きい場合、フラッグを真にする
+    # 対象色エリアの縦の長さが5画素よりも大きい場合、ターゲットに設定
     if vSumRedVertical[sMaxIndex] > 5:
-        flag = True
+        sHorizontal = sMaxIndex
+        sVertical = -1
+        sSize = vSumRedVertical[sMaxIndex]
+    else:
+        sHorizontal = -1
+        sVertical = -1
+        sSize = -1
 
-    return flag,vSumRedVertical[sMaxIndex]
+    return (sHorizontal, sVertical, sSize), imRedBinary, Rsize
 
 def locateEnemy(imInputHSV):
     # 対象色の定義１（緑の場合）
     vMinHSV = np.array([40,180,0])
-    vMaxHSV = np.array([180,255,255])
+    vMaxHSV = np.array([60,255,255])
     imGreen = cv2.inRange(imInputHSV, vMinHSV, vMaxHSV)
 
     imGreenBinary = imGreen / 255
@@ -88,7 +94,7 @@ def locateTower(imInputHSV):
 
 def locateGoal(imInputHSV):
     # 対象物(黄色)
-    vMinHSV = np.array([20,180,0])
+    vMinHSV = np.array([10,100,0])
     vMaxHSV = np.array([40,255,255])
     imYellow = cv2.inRange(imInputHSV, vMinHSV, vMaxHSV)
 
@@ -101,7 +107,7 @@ def locateGoal(imInputHSV):
     Ysize = vSumYellowVertical[sMaxIndex]
 
     # 対象色エリアの縦の長さが5画素よりも大きい場合、ターゲットに設定
-    if vSumYellowVertical[sMaxIndex] > 5:
+    if vSumYellowVertical[sMaxIndex] > 0:
         sHorizontal = sMaxIndex
         sVertical = -1
         sSize = vSumYellowVertical[sMaxIndex]

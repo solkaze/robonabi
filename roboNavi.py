@@ -5,7 +5,7 @@ import locateTarget as lt
 import stateMachine as sm
 import time
 
-from ClsDualMotorControlDummy import ClsDualMotorControl
+from ClsDualMotorControl import ClsDualMotorControl
 #from ClsDualMotorControl import ClsDualMotorControl
 
 # イメージセンサの初期化 ------------------------------------------
@@ -77,8 +77,8 @@ while videoCap.isOpened() :
         if sKey == ord('w'):
             ClsDmc.stop()
 
-            ClsDmc.driveMotor(0, 0, 98)
-            ClsDmc.driveMotor(1, 0, 96)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 94)
         elif sKey == ord('x'):
             ClsDmc.stop()
         elif sKey == ord('a'):
@@ -103,44 +103,44 @@ while videoCap.isOpened() :
 
          # 赤色、青色、黄色のターゲットの検出処理
         if not Red_Flag:
-            vFlagInfo = lt.locateFlag(imGaussianHSV)
+            vFlagInfo, imBinary, Size = lt.locateFlag(imGaussianHSV)
+            if Size >= 70:
+                Red_Flag = True
         elif not Blue_Flag:
-            vFlagInfo = lt.locateTower(imGaussianHSV)
+            vFlagInfo, imBinary, Size = lt.locateTower(imGaussianHSV)
+            if Size >= 70:
+                Blue_Flag = True
         else:
-            vFlagInfo = lt.locateGoal(imGaussianHSV)
+            vFlagInfo, imBinary, Size = lt.locateGoal(imGaussianHSV)
         
-        vEnemyInfo = lt.locateEnemy(imGaussianHSV)
+        vEnemyInfo, imEnemyBinary, EnemySize = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
 
         
         #衝突回避    
-        if lt.locateEnemy() == True:
-            placehholder = 0
+        # if lt.locateEnemy(imGaussianHSV) == True:
+        #yy    placehholder = 0
                 
         # 赤色が見えている場合は青色をターゲットに移動
-        # locateFlag() が True ならば、sState を更新
-        if lt.locateFlag(imGaussianHSV) == True:
+        if not Red_Flag and not Blue_Flag:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
-        # 赤色が見えなくなった場合は黄色をターゲットに移動
-        elif lt.locateFlag(imGaussianHSV) == False:
+        else:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
-        
-        
-        
+
         if sState == sm.IDLE:
             ClsDmc.stop()
         elif sState == sm.FORWARD:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 98)
-            ClsDmc.driveMotor(1, 0, 96)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 98)
         elif sState == sm.LEFT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 0, 40)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 50)
         elif sState == sm.RIGHT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 40)
-            ClsDmc.driveMotor(1, 0, 80)
+            ClsDmc.driveMotor(0, 0, 60)
+            ClsDmc.driveMotor(1, 0, 90)
 
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
