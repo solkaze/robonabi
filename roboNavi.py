@@ -76,7 +76,7 @@ while videoCap.isOpened() :
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 80)
             ClsDmc.driveMotor(1, 0, 80)
-            
+
         elif sKey == ord('x'):
             ClsDmc.stop()
         elif sKey == ord('a'):
@@ -128,24 +128,21 @@ while videoCap.isOpened() :
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 1, 80)
             ClsDmc.driveMotor(1, 0, 80)
-        
-        
+s
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
         if vFlagInfoBlue[0] != -1:
             cv2.line(imDisplay, (vFlagInfoBlue[0], 1), (vFlagInfoBlue[0], sHeight), (255, 0, 0))
         if vFlagInfoYellow[0] != -1:
             cv2.line(imDisplay, (vFlagInfoYellow[0], 1), (vFlagInfoYellow[0], sHeight), (0, 255, 255))
-        
-
         if sPreviousState != sState:
             print('current state is :', sState)
 
     # 画像の表示 ----------------------------------------------
     if sFrame % sDisplayRate == 0:
         cv2.imshow('input', imDisplay)
-        cv2.imshow('red', imRedBinary)
-        cv2.imshow('green', imGreenBinary)
+        #cv2.imshow('red', imRedBinary)
+        #cv2.imshow('green', imGreenBinary)
 
     # コマンドの処理 --------------------------------------------
     if sKey == ord('q'):
