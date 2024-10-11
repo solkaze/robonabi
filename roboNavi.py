@@ -73,17 +73,17 @@ while videoCap.isOpened() :
         imDisplay = imResize
         if sKey == ord('w'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 0, 80)
+            ClsDmc.driveMotor(0, 0, 98)
+            ClsDmc.driveMotor(1, 0, 96)
         elif sKey == ord('x'):
             ClsDmc.stop()
         elif sKey == ord('a'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 1, 80)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 40)
         elif sKey == ord('d'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(0, 0, 50)
             ClsDmc.driveMotor(1, 0, 80)
         elif sKey == ord('s'):
             ClsDmc.stop()
