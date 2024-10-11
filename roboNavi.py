@@ -127,7 +127,7 @@ while videoCap.isOpened() :
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 40)
             ClsDmc.driveMotor(1, 0, 80)
-s
+
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
         if vFlagInfoBlue[0] != -1:
