@@ -94,7 +94,7 @@ def locateTower(imInputHSV):
 
 def locateGoal(imInputHSV):
     # 対象物(黄色)
-    vMinHSV = np.array([10,100,0])
+    vMinHSV = np.array([10,180,0])
     vMaxHSV = np.array([40,255,255])
     imYellow = cv2.inRange(imInputHSV, vMinHSV, vMaxHSV)
 

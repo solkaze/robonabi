@@ -9,7 +9,7 @@ LEFT = 4
 def stateMachine(sState, vFlagInfo, vEnemyInfo):
 
     sHorizontalCenter = 160
-    sPositionThreshHigh = 20
+    sPositionThreshHigh = 30
     sPositionThreshLow = 5
     sSizeThreshHigh = 80
     sSizeThreshLow = 5

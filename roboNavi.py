@@ -77,14 +77,14 @@ while videoCap.isOpened() :
         if sKey == ord('w'):
             ClsDmc.stop()
 
-            ClsDmc.driveMotor(0, 0, 100)
-            ClsDmc.driveMotor(1, 0, 94)
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 0, 85)
         elif sKey == ord('x'):
             ClsDmc.stop()
         elif sKey == ord('a'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 100)
-            ClsDmc.driveMotor(1, 0, 40)
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 0, 60)
         elif sKey == ord('d'):
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 50)
@@ -132,14 +132,14 @@ while videoCap.isOpened() :
         elif sState == sm.FORWARD:
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 100)
-            ClsDmc.driveMotor(1, 0, 98)
+            ClsDmc.driveMotor(1, 0, 100)
         elif sState == sm.LEFT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(0, 0, 90)
             ClsDmc.driveMotor(1, 0, 50)
         elif sState == sm.RIGHT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 60)
+            ClsDmc.driveMotor(0, 0, 50)
             ClsDmc.driveMotor(1, 0, 90)
 
         if vEnemyInfo[0] != -1:
