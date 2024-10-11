@@ -29,11 +29,13 @@ def locateFlag(imInputHSV):
 
     flag = False
 
+    Rsize = vSumRedVertical[sMaxIndex]
+    
     # 対象色エリアの縦の長さが5画素よりも大きい場合、フラッグを真にする
     if vSumRedVertical[sMaxIndex] > 5:
         flag = True
 
-    return flag,vSumRedVertical[sMaxIndex]
+    return flag, imRedBinary, Rsize
 
 def locateEnemy(imInputHSV):
     # 対象色の定義１（緑の場合）
