@@ -144,8 +144,8 @@ while videoCap.isOpened() :
     # 画像の表示 ----------------------------------------------
     if sFrame % sDisplayRate == 0:
         cv2.imshow('input', imDisplay)
-        #cv2.imshow('red', imRedBinary)
-        #cv2.imshow('green', imGreenBinary)
+        cv2.imshow('red', imRedBinary)
+        cv2.imshow('green', imGreenBinary)
 
     # コマンドの処理 --------------------------------------------
     if sKey == ord('q'):
