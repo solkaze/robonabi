@@ -33,7 +33,7 @@ def locateFlag(imInputHSV):
     if vSumRedVertical[sMaxIndex] > 5:
         flag = True
 
-    return flag
+    return flag,vSumRedVertical[sMaxIndex]
 
 def locateEnemy(imInputHSV):
     # 対象色の定義１（緑の場合）
@@ -58,7 +58,6 @@ def locateEnemy(imInputHSV):
         sSize = -1
 
     return (sHorizontal, sVertical, sSize), imGreenBinary
-
 def locateTower(imInputHSV):
     # 対象物(青)
     vMinHSV = np.array([90, 180, 0])
