@@ -81,7 +81,7 @@ def locateTower(imInputHSV):
         sVertical = -1
         sSize = -1
 
-    return (sHorizontal, sVertical, sSize), vSumBlueVertical
+    return (sHorizontal, sVertical, sSize), imBlueBinary
 
 def locateGoal(imInputHSV):
     # 対象物(黄色)

@@ -112,10 +112,10 @@ while videoCap.isOpened() :
                 
         # 赤色が見えている場合は青色をターゲットに移動
         # locateFlag() が True ならば、sState を更新
-        if lt.locateFlag() == True:
+        if lt.locateFlag(imGaussianHSV) == True:
             sState = sm.stateMachine(sState, vFlagInfoBlue, vEnemyInfo)
         # 赤色が見えなくなった場合は黄色をターゲットに移動
-        elif lt.locateFlag() == False:
+        elif lt.locateFlag(imGaussianHSV) == False:
             sState = sm.stateMachine(sState, vFlagInfoYellow, vEnemyInfo)
         
         
@@ -124,8 +124,8 @@ while videoCap.isOpened() :
             ClsDmc.stop()
         elif sState == sm.FORWARD:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 0, 80)
+            ClsDmc.driveMotor(0, 0, 98)
+            ClsDmc.driveMotor(1, 0, 96)
         elif sState == sm.LEFT:
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 80)
