@@ -1,6 +1,5 @@
 import lgpio
 
-
 class ClsDualMotorControl:
 	def __init__(self, vPortsDrive, vPortsPWM, sFrequency):
 		self.__hGPIO = lgpio.gpiochip_open(0)

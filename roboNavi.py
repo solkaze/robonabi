@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import locateTarget as lt
 import stateMachine as sm
+import time
 
 #from ClsDualMotorControl import ClsDualMotorControl
 from ClsDualMotorControlDummy import ClsDualMotorControl
@@ -17,10 +18,10 @@ videoCap.set(cv2.CAP_PROP_FRAME_HEIGHT, sHeightSensor)
 # 処理画像サイズの決定 ------------------------------------------
 sResizeRatio = 0.5
 if videoCap.isOpened():
-	sReturn, imCamera = videoCap.read()
-	print('W: ', imCamera.shape[1], ', H:', imCamera.shape[0])
-	sWidth = int(imCamera.shape[1] * sResizeRatio)
-	sHeight = int(imCamera.shape[0] * sResizeRatio)
+    sReturn, imCamera = videoCap.read()
+    print('W: ', imCamera.shape[1], ', H:', imCamera.shape[0])
+    sWidth = int(imCamera.shape[1] * sResizeRatio)
+    sHeight = int(imCamera.shape[0] * sResizeRatio)
 
 # 画像処理・表示ループ外の変数 ------------------------------------
 sDisplayRate = 5
@@ -41,92 +42,120 @@ vPortsPWM = [12, 13]
 sFrequency = 10000
 ClsDmc = ClsDualMotorControl(vPortsDrive, vPortsPWM, sFrequency)
 
+#タイマー開始
+timeout = 180
+start_time = time.time() #開始時間の取得
+
 # 画像処理・表示ループ -------------------------------------------
 while videoCap.isOpened() :
-	# 画像の取得 -----------------------------------------------
-	sReturn, imCamera = videoCap.read()
-	if not sReturn:
-		break
+    
+    # 現在の時間との差分を記録
+    elapsed_time = time.time() - start_time
+    
+    # 終了処理
+    if elapsed_time > timeout:
+        break
+    
+    # 画像の取得 -----------------------------------------------
+    sReturn, imCamera = videoCap.read()
+    if not sReturn:
+        break
 
-	# 画像サイズの変更 ------------------------------------------
-	imResize = cv2.resize(imCamera , (sWidth, sHeight))
-	
-	# キーボード入力 -------------------------------------------- 
-	sKey = cv2.waitKey(1) & 0xFF
-	if sKey >= ord('0') and sKey <= ord('9'):
-		sMode = sKey - ord('0')
+    # 画像サイズの変更 ------------------------------------------
+    imResize = cv2.resize(imCamera , (sWidth, sHeight))
+    
+    # キーボード入力 -------------------------------------------- 
+    sKey = cv2.waitKey(1) & 0xFF
+    if sKey >= ord('0') and sKey <= ord('9'):
+        sMode = sKey - ord('0')
 
-	# 動作モードの選択 ------------------------------------------- 
-	if sMode == 1:
-		imDisplay = imResize
-		if sKey == ord('w'):
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 0, 80)
-			ClsDmc.driveMotor(1, 0, 80)
-		elif sKey == ord('x'):
-			ClsDmc.stop()
-		elif sKey == ord('a'):
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 0, 80)
-			ClsDmc.driveMotor(1, 1, 80)
-		elif sKey == ord('d'):
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 1, 80)
-			ClsDmc.driveMotor(1, 0, 80)
-		elif sKey == ord('s'):
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 1, 80)
-			ClsDmc.driveMotor(1, 1, 80)
-			
-		if sFrame == 999:
-			print('1000 frames have passed')
-			
-	elif sMode == 2:
-		imDisplay = imResize
-		imGaussianHSV = lt.preprocess(imResize)
-		vFlagInfo, imRedBinary = lt.locateFlag(imGaussianHSV)
-		vEnemyInfo, imGreenBinary = lt.locateEnemy(imGaussianHSV)
-		sPreviousState = sState
-		sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
-		
-		if sState == sm.IDLE:
-			ClsDmc.stop()
-		elif sState == sm.FORWARD:
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 0, 80)
-			ClsDmc.driveMotor(1, 0, 80)
-		elif sState == sm.LEFT:
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 0, 80)
-			ClsDmc.driveMotor(1, 1, 80)
-		elif sState == sm.RIGHT:
-			ClsDmc.stop()
-			ClsDmc.driveMotor(0, 1, 80)
-			ClsDmc.driveMotor(1, 0, 80)
-		
-		if vFlagInfo[0] != -1:
-			cv2.line(imDisplay, (vFlagInfo[0], 1), (vFlagInfo[0], sHeight), (0,0,255))
-		if vEnemyInfo[0] != -1:
-			cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
-		
-		if sPreviousState != sState:
-			print('current state is :', sState)
+    # 動作モードの選択 ------------------------------------------- 
+    if sMode == 1:
+        imDisplay = imResize
+        if sKey == ord('w'):
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 0, 80)
+            
+        elif sKey == ord('x'):
+            ClsDmc.stop()
+        elif sKey == ord('a'):
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 1, 80)
+        elif sKey == ord('d'):
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(1, 0, 80)
+        elif sKey == ord('s'):
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(1, 1, 80)
+            
+        if sFrame == 999:
+            print('1000 frames have passed')
+            
+    elif sMode == 2:
+        imDisplay = imResize
+        imGaussianHSV = lt.preprocess(imResize)
 
-	# 画像の表示 ----------------------------------------------
-	if sFrame % sDisplayRate == 0:
-		cv2.imshow('input', imDisplay)
-		#cv2.imshow('red', imRedBinary)
-		#cv2.imshow('green', imGreenBinary)
+         # 赤色、青色、黄色のターゲットの検出処理
+        vFlagInfoBlue, imBlueBinary = lt.locateTower(imGaussianHSV)
+        vFlagInfoYellow, imYellowBinary = lt.locateGoal(imGaussianHSV)
+        vEnemyInfo, imGreenBinary = lt.locateEnemy(imGaussianHSV)
+    
+        sPreviousState = sState
+    
+        # 赤色が見えている場合は青色をターゲットに移動
+        # locateFlag() が True ならば、sState を更新
+        if lt.locateFlag() == True:
+            sState = sm.stateMachine(sState, vFlagInfoBlue, vEnemyInfo)
+        # 赤色が見えなくなった場合は黄色をターゲットに移動
+        elif lt.locateFlag() == False:
+            sState = sm.stateMachine(sState, vFlagInfoYellow, vEnemyInfo)
+        
+        if sState == sm.IDLE:
+            ClsDmc.stop()
+        elif sState == sm.FORWARD:
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 0, 80)
+        elif sState == sm.LEFT:
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 80)
+            ClsDmc.driveMotor(1, 1, 80)
+        elif sState == sm.RIGHT:
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(1, 0, 80)
+        
+        
+        if vEnemyInfo[0] != -1:
+            cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
+        if vFlagInfoBlue[0] != -1:
+            cv2.line(imDisplay, (vFlagInfoBlue[0], 1), (vFlagInfoBlue[0], sHeight), (255, 0, 0))
+        if vFlagInfoYellow[0] != -1:
+            cv2.line(imDisplay, (vFlagInfoYellow[0], 1), (vFlagInfoYellow[0], sHeight), (0, 255, 255))
+        
 
-	# コマンドの処理 --------------------------------------------
-	if sKey == ord('q'):
-		break
+        if sPreviousState != sState:
+            print('current state is :', sState)
 
-	# フレーム番号の更新 ----------------------------------------    
-	if sFrame == 999:
-		sFrame = 0
-	else:
-		sFrame =sFrame + 1
+    # 画像の表示 ----------------------------------------------
+    if sFrame % sDisplayRate == 0:
+        cv2.imshow('input', imDisplay)
+        #cv2.imshow('red', imRedBinary)
+        #cv2.imshow('green', imGreenBinary)
+
+    # コマンドの処理 --------------------------------------------
+    if sKey == ord('q'):
+        break
+
+    # フレーム番号の更新 ----------------------------------------    
+    if sFrame == 999:
+        sFrame = 0
+    else:
+        sFrame =sFrame + 1
 
 # 終了処理 ----------------------------------------------------
 ClsDmc.stop()            
