@@ -6,7 +6,7 @@ import stateMachine as sm
 import time
 
 #from ClsDualMotorControl import ClsDualMotorControl
-from ClsDualMotorControlDummy import ClsDualMotorControl
+from ClsDualMotorControl import ClsDualMotorControl
 
 # イメージセンサの初期化 ------------------------------------------
 videoCap = cv2.VideoCapture(0)
@@ -24,7 +24,7 @@ if videoCap.isOpened():
     sHeight = int(imCamera.shape[0] * sResizeRatio)
 
 # 画像処理・表示ループ外の変数 ------------------------------------
-sDisplayRate = 5
+sDisplayRate = 10
 sMode = 1
 sFrame = 0
 
@@ -55,7 +55,6 @@ while videoCap.isOpened() :
     # 終了処理
     if elapsed_time > timeout:
         break
-    
     # 画像の取得 -----------------------------------------------
     sReturn, imCamera = videoCap.read()
     if not sReturn:
@@ -74,18 +73,18 @@ while videoCap.isOpened() :
         imDisplay = imResize
         if sKey == ord('w'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 0, 80)
 
+            ClsDmc.driveMotor(0, 0, 98)
+            ClsDmc.driveMotor(1, 0, 96)
         elif sKey == ord('x'):
             ClsDmc.stop()
         elif sKey == ord('a'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 1, 80)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 40)
         elif sKey == ord('d'):
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(0, 0, 50)
             ClsDmc.driveMotor(1, 0, 80)
         elif sKey == ord('s'):
             ClsDmc.stop()
@@ -123,10 +122,10 @@ while videoCap.isOpened() :
         elif sState == sm.LEFT:
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 80)
-            ClsDmc.driveMotor(1, 1, 80)
+            ClsDmc.driveMotor(1, 0, 40)
         elif sState == sm.RIGHT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 1, 80)
+            ClsDmc.driveMotor(0, 0, 40)
             ClsDmc.driveMotor(1, 0, 80)
 s
         if vEnemyInfo[0] != -1:
