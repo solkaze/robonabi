@@ -73,6 +73,7 @@ while videoCap.isOpened() :
         imDisplay = imResize
         if sKey == ord('w'):
             ClsDmc.stop()
+
             ClsDmc.driveMotor(0, 0, 98)
             ClsDmc.driveMotor(1, 0, 96)
         elif sKey == ord('x'):
@@ -96,10 +97,21 @@ while videoCap.isOpened() :
     elif sMode == 2:
         imDisplay = imResize
         imGaussianHSV = lt.preprocess(imResize)
-        vFlagInfo, imRedBinary = lt.locateFlag(imGaussianHSV)
+
+         # 赤色、青色、黄色のターゲットの検出処理
+        vFlagInfoBlue, imBlueBinary = lt.locateTower(imGaussianHSV)
+        vFlagInfoYellow, imYellowBinary = lt.locateGoal(imGaussianHSV)
         vEnemyInfo, imGreenBinary = lt.locateEnemy(imGaussianHSV)
+    
         sPreviousState = sState
-        sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
+    
+        # 赤色が見えている場合は青色をターゲットに移動
+        # locateFlag() が True ならば、sState を更新
+        if lt.locateFlag() == True:
+            sState = sm.stateMachine(sState, vFlagInfoBlue, vEnemyInfo)
+        # 赤色が見えなくなった場合は黄色をターゲットに移動
+        elif lt.locateFlag() == False:
+            sState = sm.stateMachine(sState, vFlagInfoYellow, vEnemyInfo)
         
         if sState == sm.IDLE:
             ClsDmc.stop()
@@ -115,12 +127,13 @@ while videoCap.isOpened() :
             ClsDmc.stop()
             ClsDmc.driveMotor(0, 0, 40)
             ClsDmc.driveMotor(1, 0, 80)
-        
-        if vFlagInfo[0] != -1:
-            cv2.line(imDisplay, (vFlagInfo[0], 1), (vFlagInfo[0], sHeight), (0,0,255))
+s
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
-        
+        if vFlagInfoBlue[0] != -1:
+            cv2.line(imDisplay, (vFlagInfoBlue[0], 1), (vFlagInfoBlue[0], sHeight), (255, 0, 0))
+        if vFlagInfoYellow[0] != -1:
+            cv2.line(imDisplay, (vFlagInfoYellow[0], 1), (vFlagInfoYellow[0], sHeight), (0, 255, 255))
         if sPreviousState != sState:
             print('current state is :', sState)
 
