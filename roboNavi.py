@@ -5,8 +5,8 @@ import locateTarget as lt
 import stateMachine as sm
 import time
 
+from ClsDualMotorControlDummy import ClsDualMotorControl
 #from ClsDualMotorControl import ClsDualMotorControl
-from ClsDualMotorControl import ClsDualMotorControl
 
 # イメージセンサの初期化 ------------------------------------------
 videoCap = cv2.VideoCapture(0)
@@ -111,7 +111,12 @@ while videoCap.isOpened() :
         
         vEnemyInfo = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
-    
+
+        
+        #衝突回避    
+        if lt.locateEnemy() == True:
+            placehholder = 0
+                
         # 赤色が見えている場合は青色をターゲットに移動
         # locateFlag() が True ならば、sState を更新
         if lt.locateFlag(imGaussianHSV) == True:
@@ -119,6 +124,8 @@ while videoCap.isOpened() :
         # 赤色が見えなくなった場合は黄色をターゲットに移動
         elif lt.locateFlag(imGaussianHSV) == False:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
+        
+        
         
         if sState == sm.IDLE:
             ClsDmc.stop()
