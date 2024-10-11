@@ -42,6 +42,9 @@ vPortsPWM = [12, 13]
 sFrequency = 10000
 ClsDmc = ClsDualMotorControl(vPortsDrive, vPortsPWM, sFrequency)
 
+Red_Flag = False
+Blue_Flag = False
+
 #タイマー開始
 timeout = 180
 start_time = time.time() #開始時間の取得
@@ -99,19 +102,23 @@ while videoCap.isOpened() :
         imGaussianHSV = lt.preprocess(imResize)
 
          # 赤色、青色、黄色のターゲットの検出処理
-        vFlagInfoBlue, imBlueBinary = lt.locateTower(imGaussianHSV)
-        vFlagInfoYellow, imYellowBinary = lt.locateGoal(imGaussianHSV)
-        vEnemyInfo, imGreenBinary = lt.locateEnemy(imGaussianHSV)
-    
+        if not Red_Flag:
+            vFlagInfo = lt.locateFlag(imGaussianHSV)
+        elif not Blue_Flag:
+            vFlagInfo = lt.locateTower(imGaussianHSV)
+        else:
+            vFlagInfo = lt.locateGoal(imGaussianHSV)
+        
+        vEnemyInfo = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
     
         # 赤色が見えている場合は青色をターゲットに移動
         # locateFlag() が True ならば、sState を更新
         if lt.locateFlag(imGaussianHSV) == True:
-            sState = sm.stateMachine(sState, vFlagInfoBlue, vEnemyInfo)
+            sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
         # 赤色が見えなくなった場合は黄色をターゲットに移動
         elif lt.locateFlag(imGaussianHSV) == False:
-            sState = sm.stateMachine(sState, vFlagInfoYellow, vEnemyInfo)
+            sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
         
         if sState == sm.IDLE:
             ClsDmc.stop()
@@ -130,10 +137,8 @@ while videoCap.isOpened() :
 
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
-        if vFlagInfoBlue[0] != -1:
-            cv2.line(imDisplay, (vFlagInfoBlue[0], 1), (vFlagInfoBlue[0], sHeight), (255, 0, 0))
-        if vFlagInfoYellow[0] != -1:
-            cv2.line(imDisplay, (vFlagInfoYellow[0], 1), (vFlagInfoYellow[0], sHeight), (0, 255, 255))
+        if vFlagInfo[0] != -1:
+            cv2.line(imDisplay, (vFlagInfo[0], 1), (vFlagInfo[0], sHeight), (255, 0, 0))
         if sPreviousState != sState:
             print('current state is :', sState)
 
