@@ -18,7 +18,7 @@ def stateMachine(sState, vFlagInfo, vEnemyInfo):
         if vFlagInfo[0] != -1 and vFlagInfo[2] < sSizeThreshHigh:
             sState = FORWARD
     elif sState == FORWARD:
-        if vEnemyInfo != -1:#敵検出中（緑が写っている）の場合
+        if vEnemyInfo != -1:#敵検出中 （緑が写っている）の場合
             sState = LEFT
         elif vFlagInfo[0] > sHorizontalCenter + sPositionThreshHigh:
             sState = RIGHT
