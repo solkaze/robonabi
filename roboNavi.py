@@ -49,6 +49,11 @@ Blue_Flag = False
 timeout = 180
 start_time = time.time() #開始時間の取得
 
+
+# 敵検出時のタイマー変数
+enemy_detected_start_time = None
+enemy_detected_duration = 0
+
 # 画像処理・表示ループ -------------------------------------------
 while videoCap.isOpened() :
     
@@ -116,10 +121,6 @@ while videoCap.isOpened() :
         vEnemyInfo, imEnemyBinary, EnemySize = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
 
-        
-        #衝突回避    
-        # if lt.locateEnemy(imGaussianHSV) == True:
-        #yy    placehholder = 0
                 
         # 赤色が見えている場合は青色をターゲットに移動
         if not Red_Flag and not Blue_Flag:
@@ -127,7 +128,29 @@ while videoCap.isOpened() :
         else:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
 
-        if sState == sm.IDLE:
+        if sState == sm.AVOID_L:
+            # 敵を検出して左に移動し始めた時間を記録
+            if enemy_detected_start_time is None:
+                enemy_detected_start_time = time.time()
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 90)  # 左モーターのスピード
+            ClsDmc.driveMotor(1, 0, 50)  # 右モーターのスピード
+        elif sState == sm.AVOID_R:
+            # 左移動の終了時間を計測し、その時間分だけ右移動
+            if enemy_detected_start_time is not None:
+                enemy_detected_duration = time.time() - enemy_detected_start_time
+                enemy_detected_start_time = None  # タイマーをリセット
+
+            # 右に移動する時間を左移動した時間に基づいて計算
+            ClsDmc.stop()
+            ClsDmc.driveMotor(0, 0, 50)  # 左モーターのスピード
+            ClsDmc.driveMotor(1, 0, 90)  # 右モーターのスピード
+            time.sleep(enemy_detected_duration)  # 左移動した時間分右に移動
+
+            # 右移動が完了したら、敵検出時間をリセット
+            enemy_detected_duration = 0
+
+        elif sState == sm.IDLE:
             ClsDmc.stop()
         elif sState == sm.FORWARD:
             ClsDmc.stop()
