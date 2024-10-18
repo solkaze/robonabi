@@ -135,12 +135,12 @@ while videoCap.isOpened() :
             ClsDmc.driveMotor(1, 0, 100)
         elif sState == sm.LEFT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 90)
-            ClsDmc.driveMotor(1, 0, 50)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 60)
         elif sState == sm.RIGHT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 50)
-            ClsDmc.driveMotor(1, 0, 90)
+            ClsDmc.driveMotor(0, 0, 60)
+            ClsDmc.driveMotor(1, 0, 100)
 
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
