@@ -126,6 +126,8 @@ while videoCap.isOpened() :
         # 赤色が見えている場合は青色をターゲットに移動
         if not Red_Flag or not Blue_Flag:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
+        else:
+            sState = sm.stateMachineGoal(sState, vFlagInfo, vEnemyInfo)
 
         if sState == sm.AVOID_L:
             # 敵を検出して左に移動し始めた時間を記録
