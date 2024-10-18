@@ -56,7 +56,7 @@ def locateEnemy(imInputHSV):
     Gsize = vSumGreenVertical[sMaxIndex]
 
     # 対象色エリアの縦の長さが5画素よりも大きい場合、ターゲットに設定
-    if vSumGreenVertical[sMaxIndex] > 5:
+    if vSumGreenVertical[sMaxIndex] > 81:
         sHorizontal = sMaxIndex
         sVertical = -1
         sSize = vSumGreenVertical[sMaxIndex]
