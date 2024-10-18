@@ -44,10 +44,11 @@ ClsDmc = ClsDualMotorControl(vPortsDrive, vPortsPWM, sFrequency)
 
 Red_Flag = False
 Blue_Flag = False
-
+Goal_Flag = False
 #タイマー開始
 timeout = 180
 start_time = time.time() #開始時間の取得
+goal_time = 0
 
 
 # 敵検出時のタイマー変数
@@ -109,11 +110,11 @@ while videoCap.isOpened() :
          # 赤色、青色、黄色のターゲットの検出処理
         if not Red_Flag:
             vFlagInfo, imBinary, Size = lt.locateFlag(imGaussianHSV)
-            if Size >= 70:
+            if Size >= 60:
                 Red_Flag = True
         elif not Blue_Flag:
             vFlagInfo, imBinary, Size = lt.locateTower(imGaussianHSV)
-            if Size >= 70:
+            if Size >= 60:
                 Blue_Flag = True
         else:
             vFlagInfo, imBinary, Size = lt.locateGoal(imGaussianHSV)
@@ -121,11 +122,9 @@ while videoCap.isOpened() :
         vEnemyInfo, imEnemyBinary, EnemySize = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
 
-                
+        count = 0
         # 赤色が見えている場合は青色をターゲットに移動
-        if not Red_Flag and not Blue_Flag:
-            sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
-        else:
+        if not Red_Flag or not Blue_Flag:
             sState = sm.stateMachine(sState, vFlagInfo, vEnemyInfo)
 
         if sState == sm.AVOID_L:
@@ -158,12 +157,12 @@ while videoCap.isOpened() :
             ClsDmc.driveMotor(1, 0, 100)
         elif sState == sm.LEFT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 90)
-            ClsDmc.driveMotor(1, 0, 50)
+            ClsDmc.driveMotor(0, 0, 100)
+            ClsDmc.driveMotor(1, 0, 60)
         elif sState == sm.RIGHT:
             ClsDmc.stop()
-            ClsDmc.driveMotor(0, 0, 50)
-            ClsDmc.driveMotor(1, 0, 90)
+            ClsDmc.driveMotor(0, 0, 60)
+            ClsDmc.driveMotor(1, 0, 100)
 
         if vEnemyInfo[0] != -1:
             cv2.line(imDisplay, (vEnemyInfo[0], 1), (vEnemyInfo[0], sHeight), (0,255,0))
