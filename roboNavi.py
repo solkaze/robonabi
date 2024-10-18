@@ -120,6 +120,7 @@ while videoCap.isOpened() :
         
         vEnemyInfo, imEnemyBinary, EnemySize = lt.locateEnemy(imGaussianHSV)
         sPreviousState = sState
+
                 
         # 赤色が見えている場合は青色をターゲットに移動
         if not Red_Flag and not Blue_Flag:
