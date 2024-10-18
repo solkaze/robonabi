@@ -43,8 +43,8 @@ def locateFlag(imInputHSV):
 
 def locateEnemy(imInputHSV):
     # 対象色の定義１（緑の場合）
-    vMinHSV = np.array([40,180,0])
-    vMaxHSV = np.array([60,255,255])
+    vMinHSV = np.array([30,180,0])
+    vMaxHSV = np.array([80,255,255])
     imGreen = cv2.inRange(imInputHSV, vMinHSV, vMaxHSV)
 
     imGreenBinary = imGreen / 255
@@ -66,6 +66,7 @@ def locateEnemy(imInputHSV):
         sSize = -1
 
     return (sHorizontal, sVertical, sSize), imGreenBinary, Gsize
+
 def locateTower(imInputHSV):
     # 対象物(青)
     vMinHSV = np.array([90, 180, 0])

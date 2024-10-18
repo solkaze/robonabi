@@ -10,7 +10,7 @@ AVOID_R = 6 #回避分右移動
 # ステートマシン -------------------------------------------------
 def stateMachine(sState, vFlagInfo, vEnemyInfo):
     sHorizontalCenter = 160
-    sPositionThreshHigh = 30
+    sPositionThreshHigh = 20
     sPositionThreshLow = 5
     sSizeThreshHigh = 80
     sSizeThreshLow = 5
